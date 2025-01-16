@@ -19,13 +19,13 @@ const videoRef = database.ref('video');
 let isSyncing = false;
 
 function syncVideoState(videoElement) {
-    videoRef.once('value', (snapshot) => {
+    videoRef.on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            if (data.state === 'playing' && (videoElement.paused || Math.abs(videoElement.currentTime - data.currentTime) > 1)) {
+            if (data.state === 'playing' && videoElement.paused) {
                 videoElement.currentTime = data.currentTime;
                 videoElement.play();
-            } else if (data.state === 'paused' && (!videoElement.paused || Math.abs(videoElement.currentTime - data.currentTime) > 1)) {
+            } else if (data.state === 'paused' && !videoElement.paused) {
                 videoElement.currentTime = data.currentTime;
                 videoElement.pause();
             }
@@ -39,8 +39,6 @@ function updateVideoState(videoElement, state) {
         videoRef.set({
             currentTime: videoElement.currentTime,
             state: state
-        }).then(() => {
-            syncVideoState(videoElement);
         });
     }, 300); // Debounce interval
 }
