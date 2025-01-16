@@ -9,7 +9,6 @@ body {
     height: 100vh;
     flex-direction: column;
 }
-
 .container {
     background-color: white;
     border-radius: 10px;
