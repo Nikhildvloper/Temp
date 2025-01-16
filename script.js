@@ -50,7 +50,9 @@ function syncVideoLink(videoElement, videoSource) {
         if (data) {
             videoSource.src = data;
             videoElement.load();
-            videoElement.play();
+            videoElement.oncanplay = () => {
+                videoElement.play();
+            };
         }
     });
 }
