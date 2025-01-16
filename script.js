@@ -15,6 +15,7 @@ firebase.initializeApp(firebaseConfig);
 
 const database = firebase.database();
 const videoRef = database.ref('video');
+const videoLinkRef = database.ref('videoLink');
 
 let isSyncing = false;
 
@@ -43,6 +44,21 @@ function updateVideoState(videoElement, state) {
     }, 300); // Debounce interval
 }
 
+function syncVideoLink(videoElement, videoSource) {
+    videoLinkRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            videoSource.src = data;
+            videoElement.load();
+            videoElement.play();
+        }
+    });
+}
+
+function updateVideoLink(videoLink) {
+    videoLinkRef.set(videoLink);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const videoElement = document.getElementById('video-view');
     const videoSource = document.getElementById('video-source');
@@ -56,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             videoElement.style.display = 'block';
             videoElement.play();
             updateVideoState(videoElement, 'playing');
+            updateVideoLink(videoLink); // Broadcast the video link to all users
         } else {
             alert('Please enter a valid video URL.');
         }
@@ -71,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             videoElement.style.display = 'block';
             videoElement.play();
             updateVideoState(videoElement, 'playing');
+            // Do not broadcast the local video link
         }
     });
 
@@ -87,4 +105,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     syncVideoState(videoElement);
+    syncVideoLink(videoElement, videoSource); // Sync video link for all users
 });
