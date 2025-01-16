@@ -9,6 +9,7 @@ body {
     height: 100vh;
     flex-direction: column;
 }
+
 .container {
     background-color: white;
     border-radius: 10px;
@@ -18,25 +19,30 @@ body {
     padding: 20px;
     text-align: center;
 }
+
 h1 {
     margin-bottom: 20px;
     color: #333;
 }
+
 #video-container {
     width: 100%;
-    height: 400px;
+    height: 250px; /* Reduced height */
     background-color: #000;
     margin-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
+    overflow: hidden; /* Ensures video fits within the rounded edges */
 }
+
 #video-view {
-    width: 90%;
-    height: 100%;
+    width: 100%; /* Ensures the video spans the full width */
+    height: auto; /* Maintains aspect ratio */
     display: none;
 }
+
 textarea {
     width: 100%;
     height: 100px;
@@ -46,12 +52,14 @@ textarea {
     font-size: 16px;
     margin-bottom: 20px;
 }
+
 .button-container {
     display: flex;
     justify-content: space-between;
     gap: 10px;
     margin-bottom: 20px;
 }
+
 button, label {
     padding: 10px 20px;
     background-color: #1d557d;
@@ -61,12 +69,15 @@ button, label {
     font-size: 16px;
     cursor: pointer;
 }
+
 button:hover, label:hover {
     background-color: #165a72;
 }
+
 input[type="file"] {
     display: none;
 }
+
 label {
     width: 100%;
     text-align: center;
