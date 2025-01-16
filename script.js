@@ -22,10 +22,10 @@ function syncVideoState(videoElement) {
     videoRef.on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            if (data.state === 'playing' && videoElement.paused) {
+            if (data.state === 'playing' && (videoElement.paused || Math.abs(videoElement.currentTime - data.currentTime) > 1)) {
                 videoElement.currentTime = data.currentTime;
                 videoElement.play();
-            } else if (data.state === 'paused' && !videoElement.paused) {
+            } else if (data.state === 'paused' && (!videoElement.paused || Math.abs(videoElement.currentTime - data.currentTime) > 1)) {
                 videoElement.currentTime = data.currentTime;
                 videoElement.pause();
             }
