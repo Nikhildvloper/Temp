@@ -19,7 +19,7 @@ const videoRef = database.ref('video');
 let isSyncing = false;
 
 function syncVideoState(videoElement) {
-    videoRef.on('value', (snapshot) => {
+    videoRef.once('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
             if (data.state === 'playing' && (videoElement.paused || Math.abs(videoElement.currentTime - data.currentTime) > 1)) {
@@ -39,6 +39,8 @@ function updateVideoState(videoElement, state) {
         videoRef.set({
             currentTime: videoElement.currentTime,
             state: state
+        }).then(() => {
+            syncVideoState(videoElement);
         });
     }, 300); // Debounce interval
 }
