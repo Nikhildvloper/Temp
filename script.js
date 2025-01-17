@@ -15,11 +15,12 @@ firebase.initializeApp(firebaseConfig);
 
 const database = firebase.database();
 const videoRef = database.ref('video');
-const videoLinkRef = database.ref('videoLink');
-const textEditorRef = database.ref('textEditor');
+const urlRef = database.ref('videoUrl');
 
 let isSyncing = false;
+let lastSyncedUrl = "";
 
+// Function to sync video state
 function syncVideoState(videoElement) {
     videoRef.on('value', (snapshot) => {
         const data = snapshot.val();
@@ -30,14 +31,12 @@ function syncVideoState(videoElement) {
             } else if (data.state === 'paused' && !videoElement.paused) {
                 videoElement.currentTime = data.currentTime;
                 videoElement.pause();
-            } else if (data.state === 'paused' && videoElement.paused) {
-                // Ensure the video stays paused
-                clearTimeout(isSyncing);
             }
         }
     });
 }
 
+// Function to update video state
 function updateVideoState(videoElement, state) {
     clearTimeout(isSyncing);
     isSyncing = setTimeout(() => {
@@ -48,47 +47,41 @@ function updateVideoState(videoElement, state) {
     }, 300); // Debounce interval
 }
 
-function syncVideoLink(videoElement, videoSource) {
-    videoLinkRef.on('value', (snapshot) => {
+// Function to sync video URL
+function syncVideoUrl(inputElement) {
+    urlRef.on('value', (snapshot) => {
         const data = snapshot.val();
-        if (data) {
-            videoSource.src = data;
-            videoElement.load();
-            videoElement.oncanplay = () => {
-                videoElement.play();
-            };
+        if (data && data !== lastSyncedUrl) {
+            lastSyncedUrl = data;
+            inputElement.value = data; // Update the edit box with the shared URL
         }
     });
 }
 
-function updateVideoLink(videoLink) {
-    videoLinkRef.set(videoLink);
-    textEditorRef.set(videoLink); // Broadcast the video link to all users' text editors
+// Function to update video URL
+function updateVideoUrl(newUrl) {
+    if (newUrl !== lastSyncedUrl) {
+        lastSyncedUrl = newUrl;
+        urlRef.set(newUrl);
+    }
 }
 
-function syncTextEditor() {
-    textEditorRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            document.getElementById('text-editor').value = data;
-        }
-    });
-}
-
+// DOMContentLoaded event handler
 document.addEventListener('DOMContentLoaded', () => {
     const videoElement = document.getElementById('video-view');
     const videoSource = document.getElementById('video-source');
+    const urlInput = document.getElementById('text-editor');
 
     // Load video from URL
     document.getElementById('load-video-btn').addEventListener('click', () => {
-        const videoLink = document.getElementById('text-editor').value.trim();
+        const videoLink = urlInput.value.trim();
         if (videoLink) {
             videoSource.src = videoLink;
             videoElement.load();
             videoElement.style.display = 'block';
             videoElement.play();
             updateVideoState(videoElement, 'playing');
-            updateVideoLink(videoLink); // Broadcast the video link to all users
+            updateVideoUrl(videoLink); // Share the URL with other users
         } else {
             alert('Please enter a valid video URL.');
         }
@@ -104,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             videoElement.style.display = 'block';
             videoElement.play();
             updateVideoState(videoElement, 'playing');
-            // Do not broadcast the local video link
         }
     });
 
@@ -121,6 +113,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     syncVideoState(videoElement);
-    syncVideoLink(videoElement, videoSource); // Sync video link for all users
-    syncTextEditor(); // Sync text editor for all users
+    syncVideoUrl(urlInput);
 });
