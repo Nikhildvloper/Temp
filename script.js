@@ -16,9 +16,11 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const videoRef = database.ref('video');
 const urlRef = database.ref('videoUrl');
+const speedRef = database.ref('videoSpeed');
 
 let isSyncing = false;
 let lastSyncedUrl = "";
+let lastSyncedSpeed = 1;
 
 // Function to sync video state
 function syncVideoState(videoElement) {
@@ -63,6 +65,26 @@ function updateVideoUrl(newUrl) {
     if (newUrl !== lastSyncedUrl) {
         lastSyncedUrl = newUrl;
         urlRef.set(newUrl);
+    }
+}
+
+// Function to sync video speed
+function syncVideoSpeed(videoElement) {
+    speedRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data && data !== lastSyncedSpeed) {
+            lastSyncedSpeed = data;
+            videoElement.playbackRate = data; // Update the video speed
+        }
+    });
+}
+
+// Function to update video speed
+function updateVideoSpeed(videoElement) {
+    const newSpeed = videoElement.playbackRate;
+    if (newSpeed !== lastSyncedSpeed) {
+        lastSyncedSpeed = newSpeed;
+        speedRef.set(newSpeed);
     }
 }
 
@@ -112,6 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateVideoState(videoElement, videoElement.paused ? 'paused' : 'playing');
     });
 
+    videoElement.addEventListener('ratechange', () => {
+        updateVideoSpeed(videoElement);
+    });
+
     syncVideoState(videoElement);
     syncVideoUrl(urlInput);
+    syncVideoSpeed(videoElement);
 });
