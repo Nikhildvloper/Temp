@@ -1,13 +1,13 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBm9IzydkUehldXr_Gi_AJ-PX0FUGJax5A",
-    authDomain: "watch-together-330a9.firebaseapp.com",
-    databaseURL: "https://watch-together-330a9-default-rtdb.firebaseio.com",
-    projectId: "watch-together-330a9",
-    storageBucket: "watch-together-330a9.firebasestorage.app",
-    messagingSenderId: "676714623194",
-    appId: "1:676714623194:web:2a2088531e1c7a4f6335e3",
-    measurementId: "G-F9QSQNQS36"
+    apiKey: "AIzaSyAnvbxwW94UfEHHJEsVFFruyP20taJPqZo",
+    authDomain: "video-confrence-9e131.firebaseapp.com",
+    databaseURL: "https://video-confrence-9e131-default-rtdb.firebaseio.com",
+    projectId: "video-confrence-9e131",
+    storageBucket: "video-confrence-9e131.firebasestorage.app",
+    messagingSenderId: "299971534260",
+    appId: "1:299971534260:web:2a751958721d1181c3a6e1",
+    measurementId: "G-YHZFY3TSMT"
 };
 
 // Initialize Firebase
