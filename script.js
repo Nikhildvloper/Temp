@@ -16,6 +16,7 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const videoRef = database.ref('video');
 const videoLinkRef = database.ref('videoLink');
+const editBoxRef = database.ref('editBox');
 
 let isSyncing = false;
 
@@ -61,6 +62,19 @@ function updateVideoLink(videoLink) {
     videoLinkRef.set(videoLink);
 }
 
+function syncEditBox() {
+    editBoxRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            document.getElementById('text-editor').value = data;
+        }
+    });
+}
+
+function updateEditBox(videoLink) {
+    editBoxRef.set(videoLink);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const videoElement = document.getElementById('video-view');
     const videoSource = document.getElementById('video-source');
@@ -75,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
             videoElement.play();
             updateVideoState(videoElement, 'playing');
             updateVideoLink(videoLink); // Broadcast the video link to all users
+            updateEditBox(videoLink); // Share the video link to every user's edit box
         } else {
             alert('Please enter a valid video URL.');
         }
@@ -108,4 +123,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     syncVideoState(videoElement);
     syncVideoLink(videoElement, videoSource); // Sync video link for all users
+    syncEditBox(); // Sync the edit box for all users
 });
