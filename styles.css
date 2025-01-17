@@ -9,6 +9,7 @@ body {
     height: 100vh;
     flex-direction: column;
 }
+
 .container {
     background-color: white;
     border-radius: 10px;
@@ -24,9 +25,10 @@ h1 {
     color: #333;
 }
 
+/* Video container with aspect ratio */
 #video-container {
     width: 100%;
-    height: 250px; /* Reduced height */
+    aspect-ratio: 16 / 9; /* Maintains 16:9 aspect ratio */
     background-color: #000;
     margin-bottom: 20px;
     display: flex;
@@ -37,8 +39,8 @@ h1 {
 }
 
 #video-view {
-    width: 100%; /* Ensures the video spans the full width */
-    height: auto; /* Maintains aspect ratio */
+    width: 100%; /* Video scales to fit container's width */
+    height: 100%; /* Fills container height proportionally */
     display: none;
 }
 
@@ -91,5 +93,11 @@ label {
     button, label {
         width: 100%;
         margin-bottom: 10px;
+    }
+}
+
+@media (min-width: 800px) {
+    #video-container {
+        max-height: 500px; /* Restrict height on larger screens */
     }
 }
