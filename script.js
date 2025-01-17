@@ -30,6 +30,9 @@ function syncVideoState(videoElement) {
             } else if (data.state === 'paused' && !videoElement.paused) {
                 videoElement.currentTime = data.currentTime;
                 videoElement.pause();
+            } else if (data.state === 'paused' && videoElement.paused) {
+                // Ensure the video stays paused
+                clearTimeout(isSyncing);
             }
         }
     });
